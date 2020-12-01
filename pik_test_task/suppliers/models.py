@@ -26,7 +26,7 @@ class ServiceArea(models.Model):
         verbose_name_plural = "Области обслуживания"
 
     supplier = models.ForeignKey("Supplier", on_delete=models.CASCADE)
-    name = models.CharField("Название", max_length=255, unique=True)
+    name = models.CharField("Название", max_length=255)
     price = models.IntegerField("цена обслуживания за единицу оказываемой услуги")
     service_types = models.ManyToManyField(ServiceTypes)
     geometry = models.TextField("Область")
