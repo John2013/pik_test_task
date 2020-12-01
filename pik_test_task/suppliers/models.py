@@ -12,7 +12,7 @@ class Supplier(models.Model):
     address = models.TextField("Адрес центрального офиса")
 
 
-class ServiceTypes(models.Model):
+class ServiceType(models.Model):
     class Meta:
         verbose_name = "Тип услуг"
         verbose_name_plural = "Типы услуг"
@@ -28,5 +28,5 @@ class ServiceArea(models.Model):
     supplier = models.ForeignKey("Supplier", on_delete=models.CASCADE)
     name = models.CharField("Название", max_length=255)
     price = models.IntegerField("цена обслуживания за единицу оказываемой услуги")
-    service_types = models.ManyToManyField(ServiceTypes)
+    service_types = models.ManyToManyField(ServiceType)
     geometry = models.TextField("Область")
