@@ -29,4 +29,4 @@ class ServiceArea(models.Model):
     name = models.CharField("Название", max_length=255)
     price = models.IntegerField("цена обслуживания за единицу оказываемой услуги")
     service_types = models.ManyToManyField(ServiceType)
-    geometry = models.TextField("Область")
+    geometry = models.JSONField("Область")
