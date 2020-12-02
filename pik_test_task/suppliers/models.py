@@ -27,6 +27,17 @@ class ServiceArea(models.Model):
 
     supplier = models.ForeignKey("Supplier", on_delete=models.CASCADE)
     name = models.CharField("Название", max_length=255)
-    price = models.IntegerField("цена обслуживания за единицу оказываемой услуги")
-    service_types = models.ManyToManyField(ServiceType)
+    services = models.ManyToManyField(
+        ServiceType, through="AreaService", verbose_name="Типы обслуживания"
+    )
     geometry = models.JSONField("Область")
+
+
+class AreaService(models.Model):
+    area = models.ForeignKey(
+        ServiceArea, on_delete=models.CASCADE, related_name="areaservice"
+    )
+    service_type = models.ForeignKey(
+        ServiceType, on_delete=models.CASCADE, related_name="areaservice"
+    )
+    price = models.IntegerField("цена обслуживания за единицу оказываемой услуги")
