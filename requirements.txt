@@ -1,3 +1,4 @@
-django
-djangorestframework
-shapely
+django~=3.1.4
+djangorestframework~=3.12.2
+shapely~=1.7.1
+orjson~=3.4.5
