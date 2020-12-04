@@ -1,4 +1,3 @@
 django
 djangorestframework
-markdown
-django-filter
+shapely
