@@ -11,6 +11,9 @@ class Supplier(models.Model):
     phone = models.CharField("Номер телефона", max_length=20)
     address = models.TextField("Адрес центрального офиса")
 
+    def __str__(self):
+        return str(self.name)
+
 
 class ServiceType(models.Model):
     class Meta:
@@ -18,6 +21,9 @@ class ServiceType(models.Model):
         verbose_name_plural = "Типы услуг"
 
     name = models.CharField("Название", max_length=255, unique=True)
+
+    def __str__(self):
+        return str(self.name)
 
 
 class ServiceArea(models.Model):
@@ -32,9 +38,14 @@ class ServiceArea(models.Model):
     )
     geometry = models.JSONField("Геоданные")
 
+    def __str__(self):
+        return str(self.name)
 
 
 class TypeInArea(models.Model):
     area = models.ForeignKey(ServiceArea, on_delete=models.CASCADE)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
     price = models.IntegerField("цена обслуживания за единицу оказываемой услуги")
+
+    def __str__(self):
+        return f"<Type {self.service_type} in area {self.area} (f{self.price})>"
