@@ -1,10 +1,10 @@
 from rest_framework import viewsets, permissions
 
-from .models import Supplier, ServiceArea, ServiceType
+from .models import Supplier, ServiceArea, ServiceType, TypeInArea
 from .serializers import (
     SupplierSerializer,
     ServiceAreaSerializer,
-    ServiceTypeSerializer,
+    ServiceTypeSerializer, TypeInAreaSerializer,
 )
 
 
@@ -23,4 +23,10 @@ class ServiceAreaViewSet(viewsets.ModelViewSet):
 class ServiceTypeViewSet(viewsets.ModelViewSet):
     queryset = ServiceType.objects.all()
     serializer_class = ServiceTypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TypeInAreaViewSet(viewsets.ModelViewSet):
+    queryset = TypeInArea.objects.all()
+    serializer_class = TypeInAreaSerializer
     permission_classes = [permissions.IsAuthenticated]
