@@ -43,7 +43,7 @@ class ServiceArea(models.Model):
     def __str__(self):
         return str(self.name)
 
-    def contains(self, coordinates: tuple[float, float]) -> bool:
+    def contains_point(self, coordinates: tuple[float, float]) -> bool:
         point = Point(*coordinates)
         geodata = orjson.loads(self.geometry)
         for feature in geodata["features"]:
