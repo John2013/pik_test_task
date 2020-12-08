@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'pik_test_task.suppliers',
     'rest_framework',
 ]
@@ -77,8 +78,10 @@ WSGI_APPLICATION = 'pik_test_task.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'pik_test',
+        'USER': 'postgers',
+        'PASSWORD': 'postgres',
     }
 }
 
@@ -127,3 +130,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100
 }
+
+# POSTGIS
+GDAL_LIBRARY_PATH = r"C:\OSGeo4W64\bin\gdal300.dll"
+GEOS_LIBRARY_PATH = r'C:\OSGeo4W64\bin\geos_c.dll'
