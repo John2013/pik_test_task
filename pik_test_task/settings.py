@@ -79,8 +79,8 @@ WSGI_APPLICATION = 'pik_test_task.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'pik_test',
-        'USER': 'postgers',
+        'NAME': 'pik_polygons',
+        'USER': 'postgres',
         'PASSWORD': 'postgres',
     }
 }
