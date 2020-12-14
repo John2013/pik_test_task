@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from faker import Faker
@@ -60,17 +62,29 @@ def create_test_suppliers():
             name=fake.unique.company(),
             email=fake.unique.email(),
             phone=fake.unique.phone(),
-            address=fake.unique.address()
+            address=fake.unique.address(),
         )
         areas = []
         for _ in range(20):
-            supplier.servicearea_set.create(
-                name=fake.unique.company(),
-                geometry="[]"
+            start_lat = random.randint(-90, 89)
+            start_lon = random.randint(-90, 89)
+            lat1, lon1 = start_lat, start_lon
+            lat2, lon2 = start_lat + 1, start_lon
+            lat3, lon3 = start_lat + 1, start_lon + 1
+            lat4, lon4 = start_lat, start_lon + 1
+
+            polygon = POLYGON_TEMPLATE.format(
+                lat1=lat1,
+                lat2=lat2,
+                lat3=lat3,
+                lat4=lat4,
+                lon1=lon1,
+                lon2=lon2,
+                lon3=lon3,
+                lon4=lon4,
             )
 
-
-
+            supplier.servicearea_set.create(name=fake.unique.company(), geometry=polygon)
 
 
 class SuppliersTest(TestCase):
