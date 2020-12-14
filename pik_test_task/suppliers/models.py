@@ -1,4 +1,5 @@
 import orjson
+from django.contrib.gis.db.models import PolygonField
 from django.db import models
 from shapely.geometry import Point, shape
 
@@ -38,7 +39,7 @@ class ServiceArea(models.Model):
     types = models.ManyToManyField(
         ServiceType, through="TypeInArea", verbose_name="Типы обслуживания"
     )
-    geometry = models.JSONField("Геоданные")
+    geometry = PolygonField("Область")
 
     def __str__(self):
         return str(self.name)
