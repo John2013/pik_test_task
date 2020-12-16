@@ -50,31 +50,28 @@ def create_test_suppliers(service_types: Iterable[ServiceType]):
         types.append(ServiceType.objects.create(name=fake.unique.word()))
 
     suppliers = []
-    for _ in range(10):
+    for number in range(10):
         supplier = Supplier.objects.create(
             name=fake.unique.company(),
             email=fake.unique.email(),
-            phone=fake.unique.phone_number(),
+            phone=fake.unique.phone_number()[:20],
             address=fake.unique.address(),
         )
-        areas = []
-        for number in range(20):
-            start_lat = number
-            start_lon = number
-            polygon = Polygon(
-                (
-                    (start_lat, start_lon),
-                    (start_lat + 1, start_lon),
-                    (start_lat + 1, start_lon + 1),
-                    (start_lat, start_lon + 1),
-                    (start_lat, start_lon),
-                )
+        start_lat = number
+        start_lon = number
+        polygon = Polygon(
+            (
+                (start_lat, start_lon),
+                (start_lat + 1, start_lon),
+                (start_lat + 1, start_lon + 1),
+                (start_lat, start_lon + 1),
+                (start_lat, start_lon),
             )
-            areas.append(polygon.geojson)
+        )
 
-            supplier.servicearea_set.create(
-                name=fake.unique.company(), geometry=polygon
-            )
+        supplier.servicearea_set.create(
+            name=fake.unique.company(), geometry=polygon
+        )
         suppliers.append(supplier)
     return suppliers
 
@@ -168,3 +165,4 @@ class SuppliersTest(TestCase):
 
         response = self.client.get(f"/suppliers/in_point/?lat={point[0]}&lon={point[1]}")
         self.assertEqual(response.status_code, http.HTTPStatus.OK)
+        self.assertEqual(response.json()["count"], 1, "неверное количество поставщиков")
