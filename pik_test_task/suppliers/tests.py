@@ -1,8 +1,8 @@
-import random
 from typing import Iterable
 import http
 
 from django.contrib.auth.models import User
+from django.contrib.gis.geos import Polygon, Point
 from django.test import TestCase
 from faker import Faker
 from rest_framework.test import APIClient
@@ -54,31 +54,26 @@ def create_test_suppliers(service_types: Iterable[ServiceType]):
         supplier = Supplier.objects.create(
             name=fake.unique.company(),
             email=fake.unique.email(),
-            phone=fake.unique.phone(),
+            phone=fake.unique.phone_number(),
             address=fake.unique.address(),
         )
         areas = []
-        for _ in range(20):
-            start_lat = random.randint(-90, 89)
-            start_lon = random.randint(-90, 89)
-            lat1, lon1 = start_lat, start_lon
-            lat2, lon2 = start_lat + 1, start_lon
-            lat3, lon3 = start_lat + 1, start_lon + 1
-            lat4, lon4 = start_lat, start_lon + 1
-
-            polygon = POLYGON_TEMPLATE.format(
-                lat1=lat1,
-                lat2=lat2,
-                lat3=lat3,
-                lat4=lat4,
-                lon1=lon1,
-                lon2=lon2,
-                lon3=lon3,
-                lon4=lon4,
+        for number in range(20):
+            start_lat = number
+            start_lon = number
+            polygon = Polygon(
+                (
+                    (start_lat, start_lon),
+                    (start_lat + 1, start_lon),
+                    (start_lat + 1, start_lon + 1),
+                    (start_lat, start_lon + 1),
+                    (start_lat, start_lon),
+                )
             )
+            areas.append(polygon.geojson)
 
             supplier.servicearea_set.create(
-                name=fake.unique.company(), geometry=polygon, types=service_types
+                name=fake.unique.company(), geometry=polygon
             )
         suppliers.append(supplier)
     return suppliers
@@ -163,4 +158,13 @@ class SuppliersTest(TestCase):
         self.assertEqual(area.name, "test")
 
     def test_returning_suppliers_with_area_in_point(self):
-        pass
+        types = []
+        for type_number in range(5):
+            types.append(ServiceType.objects.create(name=f"type_{type_number}"))
+
+        create_test_suppliers(types)
+
+        point = Point((3.5, 3.5))
+
+        response = self.client.get(f"/suppliers/in_point/?lat={point[0]}&lon={point[1]}")
+        self.assertEqual(response.status_code, http.HTTPStatus.OK)
