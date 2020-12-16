@@ -69,9 +69,7 @@ def create_test_suppliers(service_types: Iterable[ServiceType]):
             )
         )
 
-        supplier.servicearea_set.create(
-            name=fake.unique.company(), geometry=polygon
-        )
+        supplier.servicearea_set.create(name=fake.unique.company(), geometry=polygon)
         suppliers.append(supplier)
     return suppliers
 
@@ -163,6 +161,8 @@ class SuppliersTest(TestCase):
 
         point = Point((3.5, 3.5))
 
-        response = self.client.get(f"/suppliers/in_point/?lat={point[0]}&lon={point[1]}")
+        response = self.client.get(
+            f"/suppliers/in_point/?lat={point[0]}&lon={point[1]}"
+        )
         self.assertEqual(response.status_code, http.HTTPStatus.OK)
         self.assertEqual(response.json()["count"], 1, "неверное количество поставщиков")
