@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import Point
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -34,8 +35,15 @@ class SupplierViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
                 exception=error,
             )
+        point = Point((latitude, longitude))
+        suppliers = self.queryset.filter(servicearea__geometry__contains=point)
+        page = self.paginate_queryset(suppliers)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-        return Response({"latitude": latitude, "longitude": longitude})
+        serializer = self.get_serializer(suppliers, many=True)
+        return Response(serializer.data)
 
 
 class ServiceAreaViewSet(viewsets.ModelViewSet):
