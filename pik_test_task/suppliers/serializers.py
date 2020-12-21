@@ -38,4 +38,3 @@ class SupplierSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Supplier
         fields = ["id", "name", "email", "phone", "address", "servicearea_set"]
-        extra_kwargs = {"lat": {"write_only": True}, "lon": {"write_only": True}}
