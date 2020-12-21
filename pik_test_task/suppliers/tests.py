@@ -162,7 +162,7 @@ class SuppliersTest(TestCase):
         point = Point((3.5, 3.5))
 
         response = self.client.get(
-            f"/suppliers/in_point/?lat={point[0]}&lon={point[1]}"
+            f"/suppliers/?lat={point[0]}&lon={point[1]}"
         )
         self.assertEqual(response.status_code, http.HTTPStatus.OK)
         self.assertEqual(response.json()["count"], 1, "неверное количество поставщиков")
