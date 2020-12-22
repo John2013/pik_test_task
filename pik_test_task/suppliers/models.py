@@ -1,7 +1,5 @@
-import orjson
 from django.contrib.gis.db.models import PolygonField
 from django.db import models
-from shapely.geometry import Point, shape
 
 
 class Supplier(models.Model):
@@ -43,15 +41,6 @@ class ServiceArea(models.Model):
 
     def __str__(self):
         return str(self.name)
-
-    def contains_point(self, coordinates: tuple[float, float]) -> bool:
-        point = Point(*coordinates)
-        geodata = orjson.loads(self.geometry)
-        for feature in geodata["features"]:
-            polygon = shape(feature["geometry"])
-            if polygon.contains(point):
-                return True
-        return False
 
 
 class TypeInArea(models.Model):
