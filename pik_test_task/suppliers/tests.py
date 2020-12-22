@@ -1,3 +1,5 @@
+import itertools
+import random
 from typing import Iterable
 import http
 
@@ -8,37 +10,12 @@ from faker import Faker
 from rest_framework.test import APIClient
 from rest_framework.reverse import reverse
 
-from pik_test_task.suppliers.models import Supplier, ServiceType, ServiceArea
-
-POLYGON_TEMPLATE = """
-{
-  "type": "Polygon",
-  "coordinates": [
-    [
-      [
-        {lat1},
-        {lon1}
-      ],
-      [
-        {lat2},
-        {lon2}
-      ],
-      [
-        {lat3},
-        {lon3}
-      ],
-      [
-        {lat4},
-        {lon4}
-      ],
-      [
-        {lat1},
-        {lon1}
-      ]
-    ]
-  ]
-}  
-"""
+from pik_test_task.suppliers.models import (
+    Supplier,
+    ServiceType,
+    ServiceArea,
+    TypeInArea,
+)
 
 
 def create_test_suppliers(service_types: Iterable[ServiceType]):
@@ -71,6 +48,13 @@ def create_test_suppliers(service_types: Iterable[ServiceType]):
 
         supplier.servicearea_set.create(name=fake.unique.company(), geometry=polygon)
         suppliers.append(supplier)
+
+        for area, service_type in itertools.product(
+            supplier.servicearea_set.all(), service_types
+        ):
+            TypeInArea.objects.create(
+                area=area, service_type=service_type, price=random.randint(1000, 100_000)
+            )
     return suppliers
 
 
@@ -161,8 +145,6 @@ class SuppliersTest(TestCase):
 
         point = Point((3.5, 3.5))
 
-        response = self.client.get(
-            f"/suppliers/?lat={point[0]}&lon={point[1]}"
-        )
+        response = self.client.get(f"/suppliers/?lat={point[0]}&lon={point[1]}")
         self.assertEqual(response.status_code, http.HTTPStatus.OK)
         self.assertEqual(response.json()["count"], 1, "неверное количество поставщиков")
